@@ -3,9 +3,18 @@ from typing import Optional
 
 
 class Point2D:
-    def __init__(self, x: float, y: float):
-        self.x = x
-        self.y = y
+    def __init__(self, *args: Iterable[float | int | Iterable[float | int]]):
+        if len(args) > 2:
+            raise ValueError(
+                "point2D initialization must be an iterable object with length 2 , or 2 individual numbers"
+            )
+        if len(args) == 1:
+            # iterable object type
+            self.x = args[0][0]
+            self.y = args[0][1]
+        else:
+            self.x = args[0]
+            self.y = args[1]
 
     def __str__(self):
         return f"Point2D(x={self.x}, y={self.y})"
@@ -85,10 +94,19 @@ class Point2D:
 
 
 class Point3D:
-    def __init__(self, x: float, y: float, z: float):
-        self.x = x
-        self.y = y
-        self.z = z
+    def __init__(self, *args: Iterable[float | int | Iterable[float | int]]):
+        if len(args) > 2 or len(args) == 2:
+            raise ValueError(
+                "point2D initialization must be an iterable object with length 3 , or 3 individual numbers"
+            )
+        if len(args) == 1:
+            self.x = args[0][0]
+            self.y = args[0][1]
+            self.z = args[0][2]
+        else:
+            self.x = args[0]
+            self.y = args[1]
+            self.z = args[2]
 
     def __str__(self):
         return f"Point3D(x={self.x}, y={self.y}, z={self.z})"
@@ -106,11 +124,22 @@ class Point3D:
 class PointList:
     def __init__(self, points: Iterable[object]):
         if _assert_point_type_in_list(points):
-            self.points = points
+            self.points = self.convert_to_point(points=points)
         else:
             raise ValueError(
                 "PointList must be initialized with a list of data which can be converted toPoint2D or Point3D objects."
             )
+
+    def convert_to_point(self, points):
+        if len(points[0]) == 2:
+            return [Point2D(point) for point in points]
+        elif len(points[0]) == 3:
+            return [Point3D(point) for point in points]
+        else:
+            raise ValueError("point length must be 2 or 3")
+
+    def __getitem__(self, idx):
+        return self.points[idx]
 
 
 def _assert_point_convertable(point: object) -> bool:
