@@ -41,13 +41,13 @@ class TestCrossProduct:
 
 class TestIsCounterClockwise:
     def test_is_counter_clockwise(self):
-        p1 = Point2D(0, 0)
+        origin = Point2D(0, 0)
         p2 = Point2D(2, 2)
         p3 = Point2D(4, 0)
-        assert not is_counter_clockwise(p1, p2, p3)
+        assert not is_counter_clockwise(p2, p3, origin)
 
     def test_is_not_counter_clockwise(self):
-        p1 = Point2D(-2, -1)
+        origin = Point2D(-2, -1)
         p2 = Point2D(1, 3)
         p3 = Point2D(-4, 2)
-        assert is_counter_clockwise(p1, p2, p3)
+        assert is_counter_clockwise(p2, p3, origin)

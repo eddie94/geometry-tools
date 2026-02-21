@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class Point2D:
     def __init__(self, x: float, y: float):
         self.x = x
@@ -148,15 +151,33 @@ def lexicographical_sort(points: list[Point2D | Point3D]) -> list[Point2D | Poin
         )
 
 
-def cross_product(p1: Point2D | Point3D, p2: Point2D | Point3D) -> float | Point3D:
-    if type(p1) is not type(p2):
-        raise ValueError("Both points must be of the same type for cross product.")
+def cross_product(
+    p1: Point2D | Point3D,
+    p2: Point2D | Point3D,
+    origin: Optional[Point2D | Point3D] = None,
+) -> float | Point3D:
+    if type(p1) is not type(p2) and (origin is None or type(origin) is not type(p1)):
+        raise ValueError(
+            "Both points and th origin point must be of the same type for cross product."
+        )
     if isinstance(p1, Point2D):
-        return p1.x * p2.y - p1.y * p2.x
+        if origin is None:
+            origin = Point2D(0, 0)
+        return (p1.x - origin.x) * (p2.y - origin.y) - (p1.y - origin.y) * (
+            p2.x - origin.x
+        )
     elif isinstance(p1, Point3D):
-        x = p1.y * p2.z - p1.z * p2.y
-        y = p1.z * p2.x - p1.x * p2.z
-        z = p1.x * p2.y - p1.y * p2.x
+        if origin is None:
+            origin = Point3D(0, 0, 0)
+        x = (p1.y - origin.y) * (p2.z - origin.z) - (p1.z - origin.z) * (
+            p2.y - origin.y
+        )
+        y = (p1.z - origin.z) * (p2.x - origin.x) - (p1.x - origin.x) * (
+            p2.z - origin.z
+        )
+        z = (p1.x - origin.x) * (p2.y - origin.y) - (p1.y - origin.y) * (
+            p2.x - origin.x
+        )
         return Point3D(x, y, z)
     else:
         raise ValueError(
@@ -164,7 +185,11 @@ def cross_product(p1: Point2D | Point3D, p2: Point2D | Point3D) -> float | Point
         )
 
 
-def is_counter_clockwise(origin: Point2D, a: Point2D, b: Point2D) -> bool:
+def is_counter_clockwise(
+    a: Point2D, b: Point2D, origin: Optional[Point2D] = None
+) -> bool:
+    if origin is None:
+        origin = Point2D(0, 0)
     if type(origin) is not Point2D or type(a) is not Point2D or type(b) is not Point2D:
         raise ValueError("All points must be Point2D for counter-clockwise check.")
     return cross_product(a - origin, b - origin) > 0
