@@ -23,3 +23,19 @@ class PointND:
 
     def __str__(self):
         return f"PointND(coordinates={self.coordinates})"
+
+
+class PointList:
+    def __init__(self, points: list[Point2D | Point3D | PointND]):
+        self.points = points
+
+    def __str__(self):
+        return f"PointList(points={self.points})"
+
+
+class PointDict:
+    def __init__(self, points: dict[str, Point2D | Point3D | PointND]):
+        self.points = points
+
+    def __str__(self):
+        return f"PointDict(points={self.points})"
