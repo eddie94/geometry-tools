@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from typing import Optional
 
 
@@ -103,20 +104,43 @@ class Point3D:
 
 
 class PointList:
-    def __init__(self, points: list[Point2D | Point3D]):
-        self.points = points
-        self.points = lexicographical_sort(self.points)
+    def __init__(self, points: Iterable[object]):
+        if _assert_point_type_in_list(points):
+            self.points = points
+        else:
+            raise ValueError(
+                "PointList must be initialized with a list of data which can be converted toPoint2D or Point3D objects."
+            )
 
-    def __str__(self):
-        return f"PointList(points={self.points})"
+
+def _assert_point_convertable(point: object) -> bool:
+    if isinstance(point, Point2D) or isinstance(point, Point3D):
+        return True
+    elif (
+        isinstance(point, (list, tuple))
+        and len(point) == 2
+        and all(isinstance(coord, (int, float)) for coord in point)
+    ):
+        # point2d cases
+        return True
+    elif (
+        isinstance(point, (list, tuple))
+        and len(point) == 3
+        and all(isinstance(coord, (int, float)) for coord in point)
+    ):
+        # point3d cases
+        return True
+    else:
+        return False
 
 
-class PointDict:
-    def __init__(self, points: dict[str, Point2D | Point3D]):
-        self.points = points
-
-    def __str__(self):
-        return f"PointDict(points={self.points})"
+def _assert_point_type_in_list(point_list: Iterable[object]) -> bool:
+    if isinstance(point_list, Iterable) and all(
+        _assert_point_convertable(p) for p in point_list
+    ):
+        return True
+    else:
+        return False
 
 
 def lexicographical_sort(points: list[Point2D | Point3D]) -> list[Point2D | Point3D]:
