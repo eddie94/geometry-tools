@@ -141,6 +141,9 @@ class PointList:
     def __getitem__(self, idx):
         return self.points[idx]
 
+    def reverse(self):
+        self.points.reverse()
+
 
 def _assert_point_convertable(point: object) -> bool:
     if isinstance(point, Point2D) or isinstance(point, Point3D):

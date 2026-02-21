@@ -26,7 +26,7 @@ def _get_half_convex_hull(points: list[Point2D]) -> list[Point2D]:
 
 def convex_hull(points: list[Point2D] | PointList) -> Polygon:
     if isinstance(points, PointList):
-        points = points.points
+        points = lexicographical_sort(points)
     elif isinstance(points, (list, tuple)) and all(
         isinstance(p, Point2D) for p in points
     ):
@@ -35,8 +35,7 @@ def convex_hull(points: list[Point2D] | PointList) -> Polygon:
         raise ValueError("Input must be a list of Point2D or a PointList.")
 
     upper_hull = _get_half_convex_hull(points=points)
-
-    points = points.reverse()
+    points.reverse()
 
     lower_hull = _get_half_convex_hull(points=points)
     lower_hull.pop()
