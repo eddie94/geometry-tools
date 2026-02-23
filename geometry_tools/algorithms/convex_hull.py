@@ -35,6 +35,7 @@ def convex_hull(points: list[Point2D] | PointList) -> Polygon:
         raise ValueError("Input must be a list of Point2D or a PointList.")
 
     upper_hull = _get_half_convex_hull(points=points)
+    upper_hull.pop()
     points.reverse()
 
     lower_hull = _get_half_convex_hull(points=points)

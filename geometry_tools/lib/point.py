@@ -19,6 +19,9 @@ class Point2D:
     def __str__(self):
         return f"Point2D(x={self.x}, y={self.y})"
 
+    def __len__(self):
+        return 2
+
     def __eq__(self, value: object) -> bool:
         """Check equality between this point and another point or list.
 
@@ -92,10 +95,23 @@ class Point2D:
             )
         return Point2D(self.x + other.x, self.y + other.y)
 
+    def __repr__(self):
+        return f"({self.x}, {self.y})"
+
+    def __getitem__(self, i):
+        if i == 0:
+            return self.x
+        elif i == 1:
+            return self.y
+        else:
+            raise IndexError(
+                "Index out of range for Point2D. Valid indices are 0 and 1."
+            )
+
 
 class Point3D:
     def __init__(self, *args: Iterable[float | int | Iterable[float | int]]):
-        if len(args) > 2 or len(args) == 2:
+        if len(args) > 3 or len(args) == 2:
             raise ValueError(
                 "point2D initialization must be an iterable object with length 3 , or 3 individual numbers"
             )
@@ -111,6 +127,12 @@ class Point3D:
     def __str__(self):
         return f"Point3D(x={self.x}, y={self.y}, z={self.z})"
 
+    def __repr__(self):
+        return f"({self.x}, {self.y}, {self.z})"
+
+    def __len__(self):
+        return 3
+
     def __eq__(self, value: object) -> bool:
         if self is value:
             return True
@@ -119,6 +141,18 @@ class Point3D:
         elif isinstance(value, (list, tuple)) and len(value) == 3:
             return self.x == value[0] and self.y == value[1] and self.z == value[2]
         return False
+
+    def __getitem__(self, i):
+        if i == 0:
+            return self.x
+        elif i == 1:
+            return self.y
+        elif i == 2:
+            return self.z
+        else:
+            raise IndexError(
+                "Index out of range for Point3D. Valid indices are 0, 1, and 2."
+            )
 
 
 class PointList:
@@ -143,6 +177,9 @@ class PointList:
 
     def reverse(self):
         self.points.reverse()
+
+    def __len__(self):
+        return len(self.points)
 
 
 def _assert_point_convertable(point: object) -> bool:
@@ -175,7 +212,7 @@ def _assert_point_type_in_list(point_list: Iterable[object]) -> bool:
         return False
 
 
-def lexicographical_sort(points: list[Point2D | Point3D]) -> list[Point2D | Point3D]:
+def lexicographical_sort(points: list[Point2D | Point3D]) -> PointList:
     """Sort a list of points in lexicographical order.
 
     For Point2D objects, sorts by (x, y) coordinates.
@@ -198,9 +235,9 @@ def lexicographical_sort(points: list[Point2D | Point3D]) -> list[Point2D | Poin
         >>> # Result: [p3, p2, p1] (sorted by x first, then y)
     """
     if isinstance(points[0], Point2D):
-        return sorted(points, key=lambda p: (p.x, p.y))
+        return PointList(sorted(points, key=lambda p: (p.x, p.y)))
     elif isinstance(points[0], Point3D):
-        return sorted(points, key=lambda p: (p.x, p.y, p.z))
+        return PointList(sorted(points, key=lambda p: (p.x, p.y, p.z)))
     else:
         raise ValueError(
             f"Type {type(points[0])} is unsupported point type for lexicographical sorting."

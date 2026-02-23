@@ -19,7 +19,8 @@ class TestConvexHull:
         )
 
         convex_hull_polygon = convex_hull(points=points)
-        assert convex_hull_polygon.vertices == [
+
+        assert convex_hull_polygon == [
             (-3, -2),
             (3, -2),
             (4, 1),
